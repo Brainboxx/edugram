@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+</head>
+<body>
+<h1 class="mb-6 text-3xl">Inbox</h1>
+<div class="space-y-6">
+    {% for message in conversation.messages.all %}
+    <div class="p-6 {% if message.created_by == request.user %}bg-blue-100{% else %} bg-gray-100 {% endif %} rounded-xl">
+        <div>
+            <p class="mb-4"><strong>{{ message.created_by.username }}</strong>@ {{ message.created_at }}</p>
+            <p>{{ message.message }}</p>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+<form method="post" action="." class="mt-6">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button>Send</button>
+
+</form>
+</body>
+</html>

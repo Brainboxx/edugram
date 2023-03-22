@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link rel="stylesheet" href="{% static 'assets/css/tailwind.css' %}">
+</head>
+<body>
+<h1 class="mb-6 text-3xl">New Chat</h1>
+
+<div id="messages">
+    <!-- Message history will be displayed here -->
+</div>
+
+<form method="POST" action=".">
+    {% csrf_token %}
+    <div class="space-y-4">
+        {{ form.as_p }}
+    </div>
+    {% if form.errors or form.non_field_errors %}
+    <div class="mb-3 p-6 bg-red-100 rounded-xl">
+        {% for field in form %}
+        {{ field.errors }}
+        {% endfor %}
+        {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+    <button>Send</button>
+</form>
+
+<!--    <script>-->
+<!--      // JavaScript code for handling form submission and displaying messages-->
+<!--      const form = document.getElementById('message-form');-->
+<!--      const input = document.getElementById('message-input');-->
+<!--      const messagesDiv = document.getElementById('messages');-->
+
+<!--      form.addEventListener('submit', event => {-->
+<!--        event.preventDefault();-->
+<!--        const message = input.value;-->
+<!--        input.value = '';-->
+<!--        const messageDiv = document.createElement('div');-->
+<!--        messageDiv.textContent = message;-->
+<!--        messagesDiv.appendChild(messageDiv);-->
+<!--      });-->
+<!--    </script>-->
+</body>
+</html>
