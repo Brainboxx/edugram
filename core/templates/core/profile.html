@@ -46,15 +46,17 @@
                 {% endif %}
                 <span style="color: white; font-size: 27px;"><b>{{ user_following }} following</b></span>
 
+                {% if user_object.username != user.username %}
                 <a href="/{{user_profile.user.username}}/chat" class="header-links-item">
                                         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" width="0.5em" height="0.5em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16"><g fill="currentColor"><path d="M2 0a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2.5a1 1 0 0 1 .8.4l1.9 2.533a1 1 0 0 0 1.6 0l1.9-2.533a1 1 0 0 1 .8-.4H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/></g></svg>
                                     </a>
+                {% endif %}
 
                 <input type="hidden" value="{{ user.username }}" name="follower">
                 <input type="hidden" value="{{ user_object.username }}" name="user">
 
                 {% if user_object.username == user.username %}
-                <a href="{% url 'settings' %}"><button style="background-color: #ffc0cb; border: #ffc0cb;">Account settings</button></a>
+                <a href="{% url 'settings' %}">Account settings</a>
                 {% else %}
                 <a href="/follow" data-ripple="">
                     <button style="background-color: #ffc0cb; border: #ffc0cb;" type="submit">{{ button_text }}</button>

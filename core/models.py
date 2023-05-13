@@ -5,6 +5,7 @@ from datetime import datetime
 
 User = get_user_model()
 
+
 class Profile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     first_name = models.CharField(default='', max_length=250, blank=False)

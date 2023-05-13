@@ -40,7 +40,7 @@
             <div uk-dropdown="pos: top-right;mode:click ; animation: uk-animation-slide-bottom-small"
                  class="header_dropdown">
 
-                <!-- notivication header -->
+                <!-- notification header -->
                 <div class="px-4 py-3 -mx-5 -mt-4 mb-5 border-b">
                     <h4>Upload Pics</h4>
                 </div>
@@ -179,6 +179,7 @@
             <div uk-drop="mode: click;offset:9" class="header_dropdown profile_dropdown border-t">
                 <ul>
                     <li><a href="{% url 'settings' %}"> Account setting </a></li>
+                    <li><a href="/profile/{{request.user}}"> My profile </a></li>
                     <li><a href="{% url 'logout' %}"> Log Out</a></li>
                 </ul>
             </div>
@@ -213,25 +214,9 @@
                         <span class="block capitalize font-semibold "><a
                                 href="/profile/{{ post.user }}">{{ post.user }}</a> </span>
                     </div>
-                    <div>
-                        <a href="#"> <i
-                                class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 "></i>
-                        </a>
-                        <div class="bg-white w-56 shadow-md mx-auto p-2 mt-12 rounded-md text-gray-500 hidden text-base border border-gray-100  "
-                             uk-drop="mode: hover;pos: top-right">
-                            <li>
-                                <a href="#"
-                                   class="flex items-center px-3 py-2 text-red-500 hover:bg-red-100 hover:text-red-500 rounded-md ">
-                                    <i class="uil-trash-alt mr-1"></i> Delete
-                                </a>
-                            </li>
-                            </ul>
-
-                        </div>
-                    </div>
                 </div>
 
-                <div uk-lightbox>
+                <div class="flex w-full justify-center items-center">
                     <a href="{{ post.image.url }}">
                         <img src="{{ post.image.url }}" alt="">
                     </a>
@@ -340,7 +325,7 @@
                     {% for suggestion in suggestions_username_profile_list %}
                     <div class="flex items-center justify-between py-3">
                         <div class="flex flex-1 items-center space-x-4">
-                            <a href="profile.html">
+                            <a href="{{ suggestion.profile_img.url }}">
                                 <img src="{{ suggestion.profile_img.url }}"
                                      class="bg-gray-200 rounded-full w-10 h-10">
                             </a>

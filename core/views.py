@@ -239,7 +239,6 @@ def follow_user(request):
             delete_follower.delete()
             return redirect('/profile/'+user)
 
-
     else:
         return redirect('/')
 
