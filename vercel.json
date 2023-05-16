@@ -1,0 +1,14 @@
+{
+"builds": [
+  {
+    "src": "edugram/wsgi.py",
+    "use": "@vercel/python"
+  }
+],
+"routes": [
+  {
+    "src": "/(.*)",
+    "dest": "edugram/wsgi.py"
+  }
+  ]
+}
