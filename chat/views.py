@@ -7,12 +7,7 @@ from django.db.models import OuterRef, Subquery, Max
 
 
 # Create your views here.
-# @login_required(login_url='login')
-# def inbox(request):
-#     conversations = Conversation.objects.filter(members__in=[request.user.id])
-#
-#     return render(request, 'chat/inbox.html', {'conversations': conversations})
-
+@login_required(login_url='login')
 def inbox(request):
     user = request.user
     conversations = Conversation.objects.filter(
@@ -34,8 +29,12 @@ def inbox(request):
             ).exclude(id=user.id).values('profile__profile_img')[:1]
         )
     )
-
-    return render(request, 'chat/inbox.html', {'conversations': conversations})
+    number_of_conversation = len(conversations)
+    context = {
+        'conversations': conversations,
+        'number_of_conversation': number_of_conversation
+    }
+    return render(request, 'chat/inbox.html', context)
 
 
 
@@ -85,7 +84,7 @@ def new_chat(request, pk):
             conversation_message.created_by = request.user
             conversation_message.save()
 
-            return redirect('/')
+            return redirect('chat:inbox')
 
     else:
         form = ConversationMessageForm()

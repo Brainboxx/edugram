@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-nktntfjp^s7m409d+*v&g!_*n-(!&^7zek&^_c&@x=wmj9_7!4'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'edugram.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'URL': 'postgresql://postgres:uiTB5Xtn3qfhzTrWbGNn@containers-us-west-106.railway.app:6429/railway',
+        'URL': os.getenv('POSTGRES_URL'),
         'NAME': os.getenv('PGNAME'),
         'USER': os.getenv('PGUSER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
@@ -136,8 +136,8 @@ STORAGES = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_STORAGE_BUCKET_NAME = 'edugram-project-files'
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 

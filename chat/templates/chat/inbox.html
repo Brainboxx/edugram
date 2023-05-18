@@ -3,14 +3,18 @@
 {% load static %}
 {% block content %}
 <h1 class="mb-6 text-3xl">Inbox</h1>
+{% if number_of_conversation == 0 %}
+<h1>Your messages will appear here</h1>
+{% endif %}
 <div class="space-y-6">
     {% for conversation in conversations %}
     <a href="{% url 'chat:detail' conversation.id %}">
         <div class="p-6 flex bg-gray-100 rounded-xl">
-            <div class="pr-6">
-                <img src="{{ conversation.other_user_profile.url }}" class="w-20 rounded-xl">
-            </div>
             <div>
+<!--                <div class="w-10 h-10 rounded-full relative flex-shrink-0">-->
+<!--                    <img src="{{ conversation.messaging_user.profile.profile_img.url}}" alt=""-->
+<!--                         class="absolute h-full rounded-full w-full">-->
+<!--                </div>-->
                 {% for member in conversation.members.all %}
                 {% if member != request.user %}
                 <p class="mb-4"><strong>{{ member.username }} | {{ conversation.modified_at }}</strong></p>

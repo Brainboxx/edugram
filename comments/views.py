@@ -17,7 +17,7 @@ def add_comment(request, post_pk):
         if not post_id:
             return HttpResponseBadRequest("Post ID is required.")
 
-        comment = Comment.objects.create(post_id=post_id, username=user, content=content)
+        comment = Comment.objects.create(post_id=post_id, user=user, content=content)
         comment.save()
 
         return redirect('/')
@@ -27,5 +27,10 @@ def add_comment(request, post_pk):
 
 def view_comments(request, post_id):
     comments = Comment.objects.filter(post_id=post_id)
-    return render(request, 'comments/view_comments.html', {'comments': comments})
+    number_of_comments = len(comments)
+    context = {
+        'comments': comments,
+        'number_of_comments': number_of_comments
+    }
+    return render(request, 'comments/view_comments.html', context)
 

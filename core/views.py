@@ -11,55 +11,38 @@ import random
 # Create your views here.
 @login_required(login_url='login')
 def index(request):
-    user_object = User.objects.get(username=request.user.username)
+    user_object = request.user  # Use request.user directly
     user_profile = Profile.objects.get(user=user_object)
-
 
     user_following_list = []
     feed = []
 
-    user_following = FollowersCount.objects.filter(follower=request.user.username)
+    user_following = FollowersCount.objects.filter(follower=request.user)
 
-    for users in user_following:
-        user_following_list.append(users)
+    for user in user_following:
+        user_following_list.append(user.user)
 
-    for usernames in user_following_list:
-        feed_lists = Post.objects.filter(user=usernames)
+    for user in user_following_list:
+        feed_lists = Post.objects.filter(user=user)
         feed.append(feed_lists)
 
     feed_list = list(chain(*feed))
-
+    number_of_posts = len(feed_list)
 
     # user suggestion
     all_users = User.objects.all()
-    user_following_all = []
+    user_following_all = [user.user for user in user_following]
 
-    for user in user_following:
-        user_list = User.objects.get(username=user.user)
-        user_following_all.append(user_list)
+    new_suggestion_list = [user for user in all_users if user not in user_following_all and user != request.user]
+    random.shuffle(new_suggestion_list)
 
-    new_suggestion_list = [x for x in list(all_users) if (x not in list(user_following_all))]
-    current_user = User.objects.filter(username=request.user.username)
-    final_suggestions_list = [x for x in list(new_suggestion_list) if (x not in list(current_user))]
-    random.shuffle(final_suggestions_list)
-
-    username_profile = []
-    username_profile_list = []
-
-    for users in final_suggestions_list:
-        username_profile.append(users.id)
-
-    for ids in username_profile:
-        profile_lists = Profile.objects.filter(id_user=ids)
-        username_profile_list.append(profile_lists)
-
-    suggestions_username_profile_list = list(chain(*username_profile_list))
-
+    suggestions_username_profile_list = Profile.objects.filter(user__in=new_suggestion_list)[:4]
 
     return render(request, 'core/index.html', {
         'user_profile': user_profile,
         'posts': feed_list,
-        'suggestions_username_profile_list': suggestions_username_profile_list[:4],
+        'number_of_posts': number_of_posts,
+        'suggestions_username_profile_list': suggestions_username_profile_list,
     })
 
 @login_required(login_url='login')
@@ -159,7 +142,7 @@ def logout(request):
 @login_required(login_url='login')
 def upload(request):
     if request.method == 'POST':
-        user = request.user.username
+        user = request.user
         image = request.FILES.get('image_upload')
         caption = request.POST['caption']
 
@@ -196,11 +179,11 @@ def like_post(request):
 def profile_page(request, pk):
     user_object = User.objects.get(username=pk)
     user_profile = Profile.objects.get(user=user_object)
-    user_posts = Post.objects.filter(user=pk)
+    user_posts = Post.objects.filter(id=user_object.id)
     user_post_length = len(user_posts)
 
-    follower = request.user.username
-    user = pk
+    follower = request.user.id
+    user = user_object.id
 
     if FollowersCount.objects.filter(follower=follower, user=user).first():
         button_text = 'Unfollow'
@@ -208,8 +191,8 @@ def profile_page(request, pk):
     else:
         button_text = 'Follow'
 
-    user_followers = len(FollowersCount.objects.filter(user=pk))
-    user_following = len(FollowersCount.objects.filter(follower=pk))
+    user_followers = len(FollowersCount.objects.filter(user=user))
+    user_following = len(FollowersCount.objects.filter(follower=user))
 
     context = {
         'user_object': user_object,
@@ -225,19 +208,22 @@ def profile_page(request, pk):
 @login_required(login_url='login')
 def follow_user(request):
     if request.method == 'POST':
-        follower = request.POST['follower']
-        user = request.POST['user']
+        follower_id = request.POST['follower']
+        user_id = request.POST['user']
+
+        follower = User.objects.get(id=follower_id)
+        user = User.objects.get(id=user_id)
 
         follow_filter = FollowersCount.objects.filter(user=user, follower=follower).first()
 
         if follow_filter == None:
             new_follower = FollowersCount.objects.create(user=user, follower=follower)
             new_follower.save()
-            return redirect('/profile/'+user)
+            return redirect('/profile/'+user.username)
         else:
             delete_follower = FollowersCount.objects.get(follower=follower, user=user)
             delete_follower.delete()
-            return redirect('/profile/'+user)
+            return redirect('/profile/'+user.username)
 
     else:
         return redirect('/')

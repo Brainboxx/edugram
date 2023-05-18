@@ -52,8 +52,8 @@
                                     </a>
                 {% endif %}
 
-                <input type="hidden" value="{{ user.username }}" name="follower">
-                <input type="hidden" value="{{ user_object.username }}" name="user">
+                <input type="hidden" value="{{ request.user.id }}" name="follower">
+                <input type="hidden" value="{{ user_object.id }}" name="user">
 
                 {% if user_object.username == user.username %}
                 <a href="{% url 'settings' %}">Account settings</a>
