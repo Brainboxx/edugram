@@ -49,36 +49,22 @@ def index(request):
 def setting(request):
     user_profile = Profile.objects.get(user=request.user)
     if request.method == 'POST':
+        image = request.FILES.get('image')
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        bio = request.POST['bio']
+        location = request.POST['location']
 
-        if request.FILES.get('image') == None:
-            image = user_profile.profile_img
-            first_name = request.POST['first_name']
-            last_name = request.POST['last_name']
-            bio = request.POST['bio']
-            location = request.POST['location']
-
+        if image:
             user_profile.profile_img = image
-            user_profile.first_name = first_name
-            user_profile.last_name = last_name
-            user_profile.bio = bio
-            user_profile.location = location
-            user_profile.save()
 
-        if request.FILES.get('image') != None:
-            image = request.FILES.get('image')
-            first_name = request.POST['first_name']
-            last_name = request.POST['last_name']
-            bio = request.POST['bio']
-            location = request.POST['location']
+        user_profile.first_name = first_name
+        user_profile.last_name = last_name
+        user_profile.bio = bio
+        user_profile.location = location
+        user_profile.save()
 
-            user_profile.profile_img = image
-            user_profile.first_name = first_name
-            user_profile.last_name = last_name
-            user_profile.bio = bio
-            user_profile.location = location
-            user_profile.save()
-
-        return redirect(setting)
+        return redirect('setting')
 
     return render(request, 'core/setting.html', {'user_profile': user_profile})
 
