@@ -45,40 +45,27 @@ def index(request):
         'suggestions_username_profile_list': suggestions_username_profile_list,
     })
 
+
 @login_required(login_url='login')
 def setting(request):
     user_profile = Profile.objects.get(user=request.user)
     if request.method == 'POST':
+        image = request.FILES.get('image')
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        bio = request.POST['bio']
+        location = request.POST['location']
 
-        if request.FILES.get('image') == None:
-            image = user_profile.profile_img
-            first_name = request.POST['first_name']
-            last_name = request.POST['last_name']
-            bio = request.POST['bio']
-            location = request.POST['location']
-
+        if image:
             user_profile.profile_img = image
-            user_profile.first_name = first_name
-            user_profile.last_name = last_name
-            user_profile.bio = bio
-            user_profile.location = location
-            user_profile.save()
 
-        if request.FILES.get('image') != None:
-            image = request.FILES.get('image')
-            first_name = request.POST['first_name']
-            last_name = request.POST['last_name']
-            bio = request.POST['bio']
-            location = request.POST['location']
+        user_profile.first_name = first_name
+        user_profile.last_name = last_name
+        user_profile.bio = bio
+        user_profile.location = location
+        user_profile.save()
 
-            user_profile.profile_img = image
-            user_profile.first_name = first_name
-            user_profile.last_name = last_name
-            user_profile.bio = bio
-            user_profile.location = location
-            user_profile.save()
-
-        return redirect(setting)
+        return redirect('setting')
 
     return render(request, 'core/setting.html', {'user_profile': user_profile})
 
@@ -101,11 +88,11 @@ def signup(request):
                 user = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
 
-                #log user in and direct to settings page
+                # log user in and direct to settings page
                 user_login = auth.authenticate(username=username, password=password)
                 auth.login(request, user)
 
-                #create a profile object for the new user
+                # create a profile object for the new user
                 user_model = User.objects.get(username=username)
                 new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
                 new_profile.save()
@@ -139,6 +126,7 @@ def logout(request):
     auth.logout(request)
     return redirect('login')
 
+
 @login_required(login_url='login')
 def upload(request):
     if request.method == 'POST':
@@ -166,14 +154,15 @@ def like_post(request):
     if like_filter == None:
         new_like = LikePost.objects.create(post_id=post_id, username=username)
         new_like.save()
-        post.no_of_likes = post.no_of_likes+1
+        post.no_of_likes = post.no_of_likes + 1
         post.save()
         return redirect('index')
     else:
         like_filter.delete()
-        post.no_of_likes = post.no_of_likes-1
+        post.no_of_likes = post.no_of_likes - 1
         post.save()
         return redirect('index')
+
 
 @login_required(login_url='login')
 def profile_page(request, pk):
@@ -205,6 +194,7 @@ def profile_page(request, pk):
     }
     return render(request, 'core/profile.html', context)
 
+
 @login_required(login_url='login')
 def follow_user(request):
     if request.method == 'POST':
@@ -219,14 +209,15 @@ def follow_user(request):
         if follow_filter == None:
             new_follower = FollowersCount.objects.create(user=user, follower=follower)
             new_follower.save()
-            return redirect('/profile/'+user.username)
+            return redirect('/profile/' + user.username)
         else:
             delete_follower = FollowersCount.objects.get(follower=follower, user=user)
             delete_follower.delete()
-            return redirect('/profile/'+user.username)
+            return redirect('/profile/' + user.username)
 
     else:
         return redirect('/')
+
 
 @login_required(login_url='login')
 def search(request):
@@ -254,4 +245,3 @@ def search(request):
         'username_profile_list': username_profile_list
     }
     return render(request, 'core/search.html', context)
-
