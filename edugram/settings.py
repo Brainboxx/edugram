@@ -39,8 +39,6 @@ INSTALLED_APPS = [
     'storages'
 ]
 
-ASGI_APPLICATION = 'edugram.asgi.application'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -70,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-# WSGI_APPLICATION = 'edugram.wsgi.application'
+WSGI_APPLICATION = 'edugram.wsgi.application'
 
 
 # Database
